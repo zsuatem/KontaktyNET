@@ -1,3 +1,5 @@
+using API.Data;
+using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 namespace API
@@ -21,7 +23,27 @@ namespace API
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+            builder.Services.AddDbContext<ContactsDbContext>(options =>
+            {
+                options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
+            });
+
             var app = builder.Build();
+
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbService = scope.ServiceProvider.GetService<ContactsDbContext>();
+                var pendingMigrationsCount = dbService?.Database.GetPendingMigrations().Count();
+                if (pendingMigrationsCount > 0)
+                {
+                    if (!File.Exists(builder.Configuration.GetConnectionString("DefaultConnection")))
+                    {
+                        logger.Information("Creating database");
+                    }
+                    logger.Information("Applying {Count} migration", pendingMigrationsCount);
+                    dbService?.Database.Migrate();
+                }
+            }
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -33,7 +55,6 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
-
 
             app.MapControllers();
 
