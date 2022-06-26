@@ -30,6 +30,7 @@ namespace API.Controllers
             }
 
             var result = await _context.Contacts.ToListAsync();
+            result = result.OrderBy(x => x.LastName).ThenBy(y => y.FirstName).ToList();
             var contacts = _mapper.Map<List<ContactGetDto>>(result);
 
             return contacts;

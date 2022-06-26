@@ -63,7 +63,7 @@ namespace API.Data.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Contacts");
+                    b.ToTable("Contacts", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.ContactCategory", b =>
@@ -79,7 +79,7 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactCategories");
+                    b.ToTable("ContactCategories", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.ContactSubCategory", b =>
@@ -95,7 +95,7 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ContactSubCategories");
+                    b.ToTable("ContactSubCategories", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.User", b =>
@@ -115,7 +115,7 @@ namespace API.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("API.Models.Contact", b =>

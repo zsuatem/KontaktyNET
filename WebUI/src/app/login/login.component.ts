@@ -1,5 +1,7 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 
 @Component({
@@ -8,8 +10,9 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
+  invalidLogin?: boolean;
 
-  constructor() {
+  constructor(private http: HttpClient, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -21,6 +24,23 @@ export class LoginComponent implements OnInit {
   })
 
   loginSubmitted() {
+    const credentials = {
+      'userName': this.loginForm.value.email,
+      "password": this.loginForm.value.password
+
+    }
+
+    this.http.post("https://localhost:7251/api/auth/login", credentials)
+      .subscribe(res => {
+        const token = (<any>Response).token;
+        console.log(credentials);
+        localStorage.setItem("jwt", token);
+        this.invalidLogin = false;
+        this.router.navigate(['/']);
+      }, err => {
+        this.invalidLogin = true;
+      })
+
     console.log(this.loginForm.getRawValue());
 
   }
@@ -32,8 +52,4 @@ export class LoginComponent implements OnInit {
   get Password(): FormControl {
     return this.loginForm.get("password") as FormControl;
   }
-
-  // private http: HttpClient, private router: Router
-  // this.http.post('http://localhost:8000/api/login', this.form.getRawValue(), { withCredentials: true })
-  // .subscribe(() => this.router.navigate(['/']));
 }

@@ -12,4 +12,17 @@ export class NavComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  isUserAuthenticated() {
+    const token: string | null = localStorage.getItem("jwt");
+    if (token) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  logOut() {
+    localStorage.removeItem("jwt");
+  }
+
 }

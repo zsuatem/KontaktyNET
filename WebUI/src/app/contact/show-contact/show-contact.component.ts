@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ContactApiService } from 'src/app/contact-api.service'
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Component({
   selector: 'app-show-contact',
@@ -19,7 +20,7 @@ export class ShowContactComponent implements OnInit {
   contactsCategoriesMap: Map<number, string> = new Map();
   contactsSubCategoriesMap: Map<number, string> = new Map();
 
-  constructor(private service: ContactApiService) { }
+  constructor(private service: ContactApiService, private jwtHelper: JwtHelperService) { }
 
   ngOnInit(): void {
     this.contactList$ = this.service.getContactList();
@@ -100,6 +101,15 @@ export class ShowContactComponent implements OnInit {
 
       }
     })
+  }
+
+  isUserAuthenticated() {
+    const token: string | null = localStorage.getItem("jwt");
+    if (token) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
 }

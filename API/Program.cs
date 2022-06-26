@@ -1,6 +1,9 @@
 using API.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using System.Text;
 
 namespace API
 {
@@ -30,6 +33,36 @@ namespace API
                 options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("EnableCORS", options =>
+                {
+                    options.AllowAnyOrigin()
+                    .AllowAnyHeader()
+                    .AllowAnyMethod();
+                });
+            });
+
+            builder.Services.AddAuthentication(opt =>
+            {
+                opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+
+                        ValidIssuer = "https://localhost:7251",
+                        ValidAudience = "https://localhost:7251",
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("this is my custom Secret key for authentication"))
+                    };
+                });
+
             var app = builder.Build();
 
             using (var scope = app.Services.CreateScope())
@@ -46,6 +79,10 @@ namespace API
                     dbService?.Database.Migrate();
                 }
             }
+
+            app.UseCors("EnableCORS");
+
+            app.UseAuthentication();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

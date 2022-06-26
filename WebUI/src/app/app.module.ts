@@ -11,6 +11,11 @@ import { ContactComponent } from './contact/contact.component';
 import { ShowContactComponent } from './contact/show-contact/show-contact.component';
 import { HttpClientModule } from '@angular/common/http';
 import { AddEditContactComponent } from './contact/add-edit-contact/add-edit-contact.component';
+import { JwtModule } from '@auth0/angular-jwt';
+
+export function tokenGetter() {
+  return localStorage.getItem("jwt");
+}
 
 @NgModule({
   declarations: [
@@ -27,7 +32,14 @@ import { AddEditContactComponent } from './contact/add-edit-contact/add-edit-con
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter,
+        allowedDomains: ["localhost:7251"],
+        disallowedRoutes: []
+      }
+    })
   ],
   providers: [],
   bootstrap: [AppComponent]

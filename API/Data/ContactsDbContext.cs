@@ -9,6 +9,7 @@ namespace API.Data
         public DbSet<Contact> Contacts { get; set; }
         public DbSet<ContactCategory> ContactCategories { get; set; }
         public DbSet<ContactSubCategory> ContactSubCategories { get; set; }
+        public DbSet<LoginModel> LoginModels { get; set; }
 
         public ContactsDbContext(DbContextOptions options) : base(options)
         {
