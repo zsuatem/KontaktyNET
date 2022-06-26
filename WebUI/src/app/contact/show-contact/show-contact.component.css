@@ -1,0 +1,40 @@
+table.contact-table tr:nth-child(4n + 1) {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-bottom: none;
+}
+table.contact-table tr:nth-child(4n + 2) {
+  border-style: solid;
+  border-color: black;
+  border-width: 1px;
+  border-top: none;
+}
+
+table.contact-table tr:nth-child(4n + 2) table tr:nth-child(n) {
+  border: none;
+}
+
+#add-success-alert,
+#update-success-alert,
+#delete-success-alert {
+  display: none;
+  animation-name: fadeInAndOut;
+  animation-duration: 4s;
+  position: fixed;
+  margin: auto;
+  top: 30px;
+  padding: 10px;
+}
+
+@keyframes fadeInAndOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
